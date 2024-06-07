@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 func main() {
 
@@ -28,18 +31,48 @@ func main() {
 
 	// fmt.Println()
 
-	const(
-		num_1= 10
-		num_2= 30
-		num_3= num_1 + num_2
-		Texto_1= "Holis"
-		condicion= true
-	)
+// edad := 15
 
-	fmt.Printf("El resultado es %v",num_3)
+// if edad <= 17 {
+// 	fmt.Println("Es un niño")
+// } else if edad >= 18 {
+// 	fmt.Println("Es un adolecente")
+// }
 
 
+// var numbers [3] int= [3]int{1,2,3}
+
+// fmt.Println(numbers[2])
 	
+//Arrays
+// numbers:= [4]string {"Hola","Mundo","Como","Estas?"}
 
+// fmt.Println(numbers[0] + " " + numbers[1] + " " + numbers[2] + " " + numbers[3])
+
+//Slices o Arrays Dinamicos
+nombre:= "Misael Alejandro"
+var numbers= []int{1,2,3}
+numbers[2]= 4;
+numbers= append(numbers, 5)
+
+fmt.Println(numbers,len(numbers))
+
+// ranges 
+
+range_array:= numbers[0:2]
+range_init:= numbers[2:]
+range_end:=numbers[:4]
+
+fmt.Println(range_array)
+fmt.Println(range_init)
+fmt.Println(range_end)
+// El package strings es para trabajar con cadenas de texto
+fmt.Println(strings.Contains(nombre,"Misael"))
+//Remplaza una parte de la Cadena de Texto
+fmt.Println(strings.ReplaceAll(nombre,"Misael","Misa"))
+// Escribir todo en Mayuscula
+fmt.Println(strings.ToUpper(nombre))
+// Encontrar el caracter almacenado en cierta posicion
+fmt.Println(strings.Index(nombre,"Ale"))
 
 }
