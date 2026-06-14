@@ -52,6 +52,44 @@ if edad <= 17 {
 ```
 > En este caso, si la edad es menor o igual a 17, se imprime "Es un niño". Si no, se evalua si la edad es mayor o igual a 18, en cuyo caso se imprime "Es un adulto". Se que te estaras preguntando que significan los simbolos `<=` y `>=`, estos son operadores de comparacion, los cuales veremos en el siguiente apartado.
 
+## Estructura de Control Switch
+
+La estructura de control `switch` se utiliza para tomar decisiones basadas en el valor de una variable. Las condiciones en las que se debe de usar switch son:
+
+- Cuando tienes una **variable** a evaluar y esta puede tener varios valores posibles.
+- Cuando quieres escribir deciones mas fijas 
+
+Aqui un ejemplo de como se utiliza el switch:
+
+Este codigo funciona en lo siguiente:
+
+- Pide que el usuario pide un numero del 1 al 5
+- Ese numero registrado se va a guardar en la variable `numero_usuario`
+- El switch va a evaluar el valor de `numero_usuario` y le mandara su mensaje dependiendo del numero que pudo
+- En caso que no coincide con ninguno de las opciones, va a entrar al default y le mandara el mensaje `"No existe esa opcion"`
+
+```go
+var numero_usuario int
+fmt.Println("Ingresa un Numero del 1 al 5")
+fmt.Scanln(&numero_usuario)
+switch numero_usuario {
+case 1:
+        fmt.Println("Muy malo")
+case 2:
+        fmt.Println("Malo")
+case 3:
+        fmt.Println("Regular")
+case 4:
+        fmt.Println("Bueno")
+case 5:
+        fmt.Println("Excelente")
+default:
+        fmt.Println("No existe esa opcion")
+}
+```
+
+
+
 ## Operadores de Comparación
 
 Los operadores de comparación se utilizan para comparar dos valores. En Go, los operadores de comparación son:
