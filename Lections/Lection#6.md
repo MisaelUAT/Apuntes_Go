@@ -107,9 +107,109 @@ fmt.Printf("El numero mayor es de %d  El numero menor es de %d",numero_Mayor,num
 
 **Nota:** Si quieres usar variables y mostrarlas fuera del for, es necesario que si o si los declares antes de iniciar el bucle
 
-## Recorrido de un slice 
+## Recorrido de un slice
+Para recorrer un `slice` vamos a cambiar un poco la forma en como manejamos el `for`, ya que recordando en las viejas lecciones los slices no se les define un numero finito de cuantos valores puede almacenar. Aqui usaremos la sintaxis `range` que nos ayudara a realizar el recorrido **sin especificar nosotros desde el principio
+el limite del `slice`**
 
+### Estructura del `for` con `range`
+A continuacion se muestra la estructura:
+```go
+for indice, valor := range nombre {
+// Aqui va el codigo con el que se va a trabajar por cada elemento del slice
+}
+```
 
+Aqui podemos observar que:
+
+1. Despues de la palabra `for` se inicializa dos variables:
+* `indice`: Numero de posicion del elemento
+* `valor`: El valor que se tiene en la posicion actual del slice
+
+2. `range`: Esta sintaxis sirve para poder recorrer el slice hasta el ultimo elemento del slice de acuerdo a su rango
+
+### Ejemplos de recorrido de slices con `for range`
+
+#### Ejercicio
+Vamos a realizar el mismo ejercicio anterior pero ahora con `slice y for range`
+
+```go
+
+var numerosUsuario []int
+var numero_sumaTotal int = 0
+var numero_Mayor int 
+var numero_Menor int 
+
+for x:=1; x <= 5; x++{
+	valor_usuario:= 0 
+	fmt.Printf("Ingresa el valor %d",x)
+	fmt.Scanln(&valor_usuario)
+	numerosUsuario  = append(numerosUsuario,valor_usuario)
+}
+
+for i,val:= range numerosUsuario{
+	numero_sumaTotal = numero_sumaTotal + val
+	if i == 0 {
+		numero_Mayor = val
+		numero_Menor = val
+	}
+	if val > numero_Mayor{
+		numero_Mayor = val
+	}
+	if val < numero_Menor{
+		numero_Menor = val
+	}
+}
+
+fmt.Printf("El primer valor es: %d \n",numerosUsuario[0])
+fmt.Printf("El ultimo valor es de: %d \n",numerosUsuario[len(numerosUsuario) - 1])
+fmt.Printf("El numero mayor es: %d \n",numero_Mayor)
+fmt.Printf("El numero menor es: %d \n",numero_Menor)
+fmt.Printf("La suma total es de: %d \n",numero_sumaTotal)
+fmt.Printf("El promedio es de: %d \n",numero_sumaTotal/len(numerosUsuario))
+}
+```
+
+Desglosando este codigo, podemos decir que:
+
+1. Mantiene la estructura igual de las variables anteriores y se usa un `for` tradicional para poder obtener los datos que se **guardaran en nuestro slice**
+```go
+var numerosUsuario []int
+var numero_sumaTotal int = 0
+var numero_Mayor int 
+var numero_Menor int 
+
+for x:=1; x <= 5; x++{
+	valor_usuario:= 0 
+	fmt.Printf("Ingresa el valor %d",x)
+	fmt.Scanln(&valor_usuario)
+	numerosUsuario  = append(numerosUsuario,valor_usuario)
+}
+```
+> Aqui lo que vemos diferente es que usamos el metodo `append` para almacenar el valor en el slice sin tomar en cuenta su posicion
+
+2. En el `for range` se estructura de la forma:
+* `i`: Posicion actual de nuestro slice
+* `val`: El valor que se encuentra en ese posicion
+* `numerosUsuario`: El slice en el que trabajaremos
+
+3. Observamos que mantenemos la misma logica que el ejercicio anterior en cada vuelta del ciclo, pero lo que cambia son la     **forma en como estamos adaptando el codigo al slice**
+
+```go
+numero_sumaTotal = numero_sumaTotal + val
+	if i == 0 {
+		numero_Mayor = val
+		numero_Menor = val
+	}
+	if val > numero_Mayor{
+		numero_Mayor = val
+	}
+	if val < numero_Menor{
+		numero_Menor = val
+	}
+```
+> Aqui en los slice ya no es necesario poner el numerosUsuarios[i], ya que manejamos los valores directamente por cada vuelta con la variable `val` 
+
+**Nota:** La segunda parte de los bucles ha finalizado, pero todavia vamos a ver mas contenido para recorrer otras estructuras mas complejas. Pero por el momento la dejaremos aqui :3
 
 
 
