@@ -1,0 +1,285 @@
+# Apuntes de comandos de `docker`
+
+## Puntos Importantes de docker
+
+* `Docker:` A diferencia de los VM, este ejecuta los contenedores en el sistema operativo anfiltrion 
+* `Docker engine:` Servicio que administra Contenedores
+* `Imagen` = Receta = Plantilla(Archivos,Dependencias y Configuraciones ya Preestablecidas)
+* `Contenedor` = Comida ya Preparada(Entorno Preparado de una Imagen)
+* `Docker hub:` Repositorio de Imágenes
+
+## Punto importante de los contenedores
+* Cada contenedor tiene **su propia red y el puerto que usa el contenedor no esta expuesto al exterior**
+
+
+### Ciclos de Vida de un Contenedor
+Creado--> Ejecutándose --> Detenido --> Eliminado
+
+## Explicación de Atributos de Comandos Basicos
+### Descargar una Imagen
+```bash
+docker pull image
+```
+* `docker:` Programa que se comunica con Docker Engine
+* `pull:` descargar
+### Comando para crear y ejecutar un contenedor
+```bash
+docker run -d --name nginx1 nginx:latest
+o
+docker run -d --name nginx1 nginx:1.20 //Especificar Version
+```
+
+Desglosándolo,podemos darnos cuenta que:
+
+* `run:` crear y ejecutar un contenedor
+* `-d:` segundo plano
+* `--name:` nombre personalizado del contenedor
+* `nginx:` imagen a utilizar
+
+### Comando para detener un contenedor
+```bash
+docker stop nginx1
+```
+
+* `stop:` Detener ejecucion del contenedor
+
+### Iniciar un Contenedor
+```bash
+docker start nginx1
+```
+
+* `start:` Ejecutar contenedor
+### Eliminar un contenedor
+```bash
+docker rm -f nginx1
+```
+
+* `rm:` Remover
+* `-f:` forzosamente
+
+### Crear un Contenedor de Mysql
+```bash
+docker run -d \
+--name mariadb \
+-e MYSQL_ROOT_PASSWORD=1234 \
+-p 3306:3306 \ //puertoPC:puertoContenedor
+mariadb
+```
+
+* `-e:` Variable de entorno
+* `p:` Puerto a utilizar
+
+### Crear y Acceder un contenedor con terminal interactivo
+Crear:
+```bash
+docker run -dit --name ubuntu1 --network red-ubuntu ubuntu
+```
+Acceder:
+`-dit:`: Segundo plano con terminal interactiva
+
+```bash
+docker exec -it web1 bash
+```
+* `i:` Interactiva
+* `t:` Terminal interactiva
+* `bash:` lenguaje consola
+
+## Redes en Docker
+* `bridge:` Red virtual creada por Docker
+* Docker crea automáticamente **registros DNS**
+* `--name:` tambien son considerados los nombres de los host que tiene el contenedor que se le asigna
+
+### Comandos para Redes
+
+#### Crear una Red
+
+```bash
+docker network create mi-red
+```
+
+#### Verificar la lista de redes
+```bash
+docker network ls
+```
+
+* `ls:` listado
+
+#### Ejemplo de conectar dos contenedores a una misma red
+```bash
+docker run -d \
+--name db \
+--network mi-red \
+-e MYSQL_ROOT_PASSWORD=12345 \
+mariadb
+```
+
+* `--network:` Nombre de la red
+
+```bash
+docker run -d \
+--name api \
+--network Mi-red \
+nginx
+```
+
+* `--network:` Nombre de la red
+
+**Nota:** Ambos se van a conectar a la red que comparten llamada `Mi-red`
+
+## Volúmenes
+Es un almacenamiento gestionado por docker que vive fuera del contenedor
+* En los contenedores docker por default no guarda los datos que se utilizan en el momento y al momento de volver a usarlo lo encuentras vació
+
+### Comandos para Volúmenes
+
+#### Crear un volumen y usarlo en un contenedor
+Crear:
+
+```bash
+docker volume create datos_contenedor
+```
+* `volume:` El espacio de almacenamiento externo
+
+Usarlo:
+```bash
+docker run -d \
+--name db \
+-e MYSQL_ROOT_PASSWORD=1234 \
+-v datos_mariadb:/var/lib/mysql \
+mariadb
+```
+* `datos_mariadb:` Nombre del volumen
+* `-v:` volumen a guardar los datos
+* `/var/lib/mysql:` ruta
+
+> En este caso la ruta de `mariadb` es /var/lib/mysql ya que ahi es donde almacena **las bases de datos,tablas,usuarios y registros**
+
+Ver todos tus volumenes:
+
+```bash
+docker volume ls
+```
+
+#### Inspeccionar el volumen creado
+```bash
+docker volume inspect nombre_volume
+```
+
+* `inspect:` Inspeccionar
+
+#### Eliminar un Volume
+```bash
+docker volume rm -f nombre_volume
+```
+
+## Docker Compose
+* En vez de estar ejecutando varias comandos de cada contenedor que vayamos a usar, se usa el formato `Yaml` para especificar todo lo que vamos a configurar de **nuestros contenedores,la conexion a compartir,volumenes,puertos,etc**
+
+* Normalmente el documento que siempre vamos a realizar va a hacer el `compose.yaml o docker-compose.yaml`.
+
+### Estructura de un archivo compose básico
+```bash
+services:
+	db:
+		image:mariadb
+		environment: MYSQL_ROOT_PASSWORD: 12345
+		container_name: mariadb_container
+
+		ports: 
+			- 3306:3306
+		volumes:
+			-datos_db:/var/lib/mariadb
+	phpmyadmin:
+		image:phpmyadmin
+```
+
+* `services:` Son los servicios que usaremos para crear contenedores
+* `image:` La imagen que vamos a usar para el contenedor
+* `db y phpmyadmin:` Son los nombres de nuestros servicios(Libre)
+* `environment:` Es la variable del entorno que se va a usar en el contenedor
+* `container_name:` Nombre del contenedor
+*  `ports:` SOn los puertos que se van a usar en el Host y Contenedor
+* `volumes:` Los volúmenes que vamos a usar
+
+### Ejecutar el compose
+```bash
+docker compose up -d
+```
+
+* `compose:`Archivo compose
+* `up:` Levantar compose
+
+### Detener el compose
+
+```bash
+docker compose down
+```
+
+* `down:`Tumbar compose
+
+### Dockerfiles
+* Es un archivo de instrucciones para **crear nuestras propias imágenes** 
+
+#### Estructura básica de un dockerfile
+
+```dockerfile
+FROM golang:1.24
+
+WORKDIR /app
+
+COPY . .
+
+RUN go build -o api
+
+CMD ["./api"]
+```
+
+* `FROM:`Imagen donde partirá tu contenedor
+* `WORKDIR`:ruta a trabajar
+* `COPY ..:` Copia todo el proyecto al directorio actual
+* `RUN:`Ejecuta ese comando en la construccion
+* `CMD:`Ejecuta cuando inicie el contenedor
+
+#### Construir una imagen
+```bash
+	docker build -t nombre_imagen . 
+```
+
+* `build:` Contruir una imagen
+* `t:` Nombre de la imagen
+* `.:` Contexto de construcion
+
+#### Estructura de un dockerfile con go
+```dockerfile
+FROM golang:1.24 AS builder
+
+WORKDIR /app
+
+COPY . .
+
+RUN go build -o api
+
+FROM alpine:latest
+
+WORKDIR /app
+
+COPY --from=builder /app/api .
+
+CMD ["./api"]
+```
+
+* `AS:` Un apodo que se le da a la etapa del dockerfile
+
+* `COPY --from:` Copia el ejecutable desde la etapa que se uso con el `AS` hasta la imagen final
+
+* `EXPOSE:` Indica que se va a usar el puerto 8080
+
+
+
+
+
+
+
+
+
+
